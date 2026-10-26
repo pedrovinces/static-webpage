@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Dr. Pedro Vinces, médico intensivista (CRM/RJ 94456-4, RQE 54901). Gestão de UTI, tecnologia e inteligência artificial aplicadas à saúde.">
+<meta property="og:title" content="Dr. Pedro Vinces · Medicina Intensiva e Tecnologia">
+<meta property="og:description" content="Médico intensivista que constrói software para quem cuida de pacientes graves.">
+<meta property="og:url" content="https://pedrovinces.com.br/">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://pedrovinces.com.br/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Pedro Vinces","honorificPrefix":"Dr.","jobTitle":"Médico intensivista","url":"https://pedrovinces.com.br/","alumniOf":"Universidade Federal Fluminense","sameAs":["https://www.linkedin.com/in/pedrovinces","https://github.com/pedrovinces","https://orcid.org/0009-0008-5759-0853"]}
+</script>
+<!-- page:start -->
+<title>Dr. Pedro Vinces</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Schibsted+Grotesk:wght@500;700;800&display=swap">
+<style>
+/* Layout: duas faixas paralelas (clínica | código) unidas por um traçado de monitor que vira sinal digital */
+:root {
+  --bg: #f2f5f4;
+  --surface: #ffffff;
+  --ink: #0d1b1e;
+  --muted: #4d5f62;
+  --line: #d3dcdb;
+  --clin: #0b7a63;        /* verde do ECG */
+  --code: #a3610a;        /* amarelo da capnografia */
+  --clin-soft: #e1f0eb;
+  --code-soft: #f6ecdc;
+  --monitor: #0b1517;
+  --monitor-ink: #e7efee;
+  --f-display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", Roboto, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --step--1: 0.8125rem;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: 1.75rem;
+  --step-3: clamp(2.25rem, 1.4rem + 3.6vw, 4.25rem);
+  --radius: 10px;
+  --wrap: 72rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a1214; --surface: #111c1f; --ink: #e5eded; --muted: #9aacad; --line: #23343a;
+    --clin: #3fd0a6; --code: #f2b84b; --clin-soft: #10302a; --code-soft: #33280f;
+    --monitor: #050b0c; --monitor-ink: #e5eded; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0a1214; --surface: #111c1f; --ink: #e5eded; --muted: #9aacad; --line: #23343a;
+  --clin: #3fd0a6; --code: #f2b84b; --clin-soft: #10302a; --code-soft: #33280f;
+  --monitor: #050b0c; --monitor-ink: #e5eded; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--f-body); font-size: var(--step-0); line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--clin); outline-offset: 3px; border-radius: 4px; }
+.wrap {
+  max-width: var(--wrap); margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.08; margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
+p { margin: 0; }
+.eyebrow {
+  font-family: var(--f-mono); font-size: var(--step--1); text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--muted);
+}
+.c-clin { color: var(--clin); }
+.c-code { color: var(--code); }
+
+/* Cabeçalho */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.top .wrap { display: flex; align-items: center; gap: 1rem; padding-block: 0.75rem; }
+.brand { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; margin-right: auto; }
+.brand svg { width: 34px; height: 34px; flex: none; }
+.brand b { font-family: var(--f-display); font-weight: 800; font-size: 1.05rem; letter-spacing: -0.01em; }
+.brand b span { color: var(--muted); font-weight: 500; }
+.nav { display: flex; gap: 1.25rem; }
+.nav a { text-decoration: none; font-size: 0.92rem; color: var(--muted); }
+.nav a:hover { color: var(--ink); }
+.tools { display: flex; gap: 0.4rem; }
+.tool {
+  font: 500 0.78rem/1 var(--f-mono); letter-spacing: 0.06em; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
+  padding: 0.5rem 0.7rem; cursor: pointer;
+}
+.tool:hover { border-color: var(--muted); }
+.tool svg { display: block; }
+@media (max-width: 760px) { .nav { display: none; } }
+
+/* Hero */
+.hero { padding-block: clamp(2.5rem, 6vw, 5rem) 0; }
+.hero h1 { font-size: var(--step-3); font-weight: 800; margin-top: 0.9rem; }
+.hero h1 small { display: block; font-size: 0.32em; font-weight: 500; letter-spacing: 0; color: var(--muted); margin-bottom: 0.4rem; }
+.lede { max-width: 40rem; font-size: var(--step-1); line-height: 1.5; color: var(--muted); margin-top: 1.25rem; }
+.lede strong { color: var(--ink); font-weight: 500; }
+
+.monitor {
+  margin-top: clamp(2rem, 4vw, 3rem);
+  background: var(--monitor); color: var(--monitor-ink);
+  border-radius: var(--radius); overflow: hidden; position: relative;
+}
+.monitor-bar {
+  display: flex; justify-content: space-between; gap: 1rem;
+  font: 500 0.72rem/1 var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.85rem 1rem 0;
+}
+.monitor-bar .l { color: #3fd0a6; }
+.monitor-bar .r { color: #f2b84b; text-align: right; }
+.monitor canvas { display: block; width: 100%; height: 150px; }
+.seam { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(229,239,238,0.12); }
+
+.split { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); }
+.split > div { padding-block: 1.75rem 2.25rem; min-width: 0; }
+.split > div:first-child { padding-right: clamp(1rem, 3vw, 2.5rem); border-right: 1px solid var(--line); }
+.split > div:last-child { padding-left: clamp(1rem, 3vw, 2.5rem); }
+.split h2 { font-size: var(--step-1); font-weight: 700; margin: 0.5rem 0 0.6rem; }
+.split p { color: var(--muted); max-width: 32rem; }
+@media (max-width: 680px) {
+  .split { grid-template-columns: 1fr; }
+  .split > div:first-child { padding-right: 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .split > div:last-child { padding-left: 0; }
+}
+
+.readouts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
+.readout { background: var(--bg); padding: 1rem 1rem 1.1rem 0; }
+.readout + .readout { padding-left: 1rem; }
+.readout dt { font: 500 0.7rem/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.readout dd { margin: 0.45rem 0 0; font: 500 1.05rem/1.2 var(--f-mono); font-variant-numeric: tabular-nums; }
+@media (max-width: 680px) {
+  .readouts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .readout:nth-child(3) { padding-left: 0; }
+}
+
+/* Seções */
+section.block { padding-block: clamp(3.5rem, 8vw, 6rem) 0; }
+.head { display: grid; gap: 0.75rem; margin-bottom: 2.25rem; max-width: 44rem; }
+.head h2 { font-size: var(--step-2); font-weight: 800; }
+.head p { color: var(--muted); }
+
+/* Trajetória em duas faixas */
+.lanes { display: grid; grid-template-columns: 5.5rem 1fr 1fr; border-top: 1px solid var(--line); }
+.lanes .lh { font: 500 0.72rem/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; padding: 0.9rem 0; border-bottom: 1px solid var(--line); }
+.lanes .yr { font: 500 0.95rem/1.4 var(--f-mono); font-variant-numeric: tabular-nums; padding: 1.1rem 0; border-bottom: 1px solid var(--line); color: var(--muted); }
+.lanes .ev { padding: 1.1rem 1.25rem 1.1rem 0; border-bottom: 1px solid var(--line); min-width: 0; }
+.lanes .ev b { display: block; font-weight: 600; }
+.lanes .ev span { color: var(--muted); font-size: 0.94rem; }
+.lanes .ev.clin b::before, .lanes .ev.code b::before {
+  content: ""; display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%;
+  margin-right: 0.5rem; vertical-align: 0.08em;
+}
+.lanes .ev.clin b::before { background: var(--clin); }
+.lanes .ev.code b::before { background: var(--code); }
+.lanes .ev.empty::after { content: "·"; color: var(--line); }
+@media (max-width: 680px) {
+  .lanes { grid-template-columns: 4rem 1fr; }
+  .lanes .lh.hide-sm, .lanes .ev.empty { display: none; }
+  .lanes .ev.clin + .ev.code, .lanes .ev.code.after { grid-column: 2; }
+}
+
+/* Projetos */
+.projects { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+@media (max-width: 900px) { .projects { grid-template-columns: 1fr; } }
+.proj {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 1.5rem; display: grid; gap: 1rem; align-content: start;
+}
+.proj h3 { font-size: 1.4rem; font-weight: 800; }
+.proj .tagline { color: var(--muted); }
+.proj dl { margin: 0; display: grid; gap: 0.9rem; }
+.proj dt { font: 500 0.7rem/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.proj dt.p { color: var(--clin); }
+.proj dt.s { color: var(--code); }
+.proj dd { margin: 0.35rem 0 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.chip { font: 500 0.72rem/1 var(--f-mono); padding: 0.4rem 0.55rem; border-radius: 6px; background: var(--clin-soft); color: var(--ink); }
+.chip.k { background: var(--code-soft); }
+.note { margin-top: 1.25rem; font-size: 0.9rem; color: var(--muted); display: flex; gap: 0.5rem; align-items: baseline; }
+.note b { font: 500 0.7rem/1 var(--f-mono); letter-spacing: 0.1em; border: 1px solid var(--line); border-radius: 4px; padding: 0.3rem 0.4rem; color: var(--ink); }
+
+/* Consultoria */
+.areas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.5rem; border-top: 1px solid var(--line); }
+@media (max-width: 680px) { .areas { grid-template-columns: 1fr; } }
+.area { padding-block: 1.25rem; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 2.25rem 1fr; gap: 0.25rem 0.75rem; }
+.area svg { width: 1.6rem; height: 1.6rem; grid-row: span 2; margin-top: 0.15rem; }
+.area h3 { font-size: 1.1rem; font-weight: 700; }
+.area p { color: var(--muted); font-size: 0.96rem; }
+.cta { margin-top: 2.25rem; display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.btn {
+  display: inline-flex; align-items: center; gap: 0.55rem; text-decoration: none;
+  font-weight: 600; padding: 0.85rem 1.2rem; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--surface);
+}
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn:hover { border-color: var(--muted); }
+.btn svg { width: 1.1rem; height: 1.1rem; }
+
+/* Rodapé */
+footer { margin-top: clamp(4rem, 9vw, 7rem); border-top: 1px solid var(--line); }
+footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns: 1fr auto; gap: 1.5rem; align-items: start; }
+@media (max-width: 680px) { footer .wrap { grid-template-columns: 1fr; } }
+.legal { font-size: 0.88rem; color: var(--muted); display: grid; gap: 0.35rem; }
+.legal strong { color: var(--ink); font-weight: 600; }
+.links { display: flex; gap: 1rem; flex-wrap: wrap; }
+.links a { font: 500 0.82rem/1 var(--f-mono); text-decoration: none; color: var(--muted); }
+.links a:hover { color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="pv-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0.45" style="stop-color:var(--clin)"/>
+      <stop offset="0.75" style="stop-color:var(--code)"/>
+    </linearGradient>
+    <symbol id="pv-mark" viewBox="0 0 40 40">
+      <rect x="1" y="1" width="38" height="38" rx="9" style="fill:var(--monitor)"/>
+      <path d="M5 23 H9 C10.5 23 11 16 13.5 16 C16 16 16.5 23 18 23 H20 L23.5 31 L27.5 9 L30.5 23 H32" fill="none" stroke="url(#pv-grad)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="33" y="20" width="3" height="5" rx="0.6" style="fill:var(--code)"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#inicio" aria-label="Pedro Vinces">
+      <svg aria-hidden="true"><use href="#pv-mark"/></svg>
+      <b>pedro<span>vinces</span></b>
+    </a>
+    <nav class="nav" aria-label="Seções">
+      <a href="#trajetoria" data-i18n="nav.path">Trajetória</a>
+      <a href="#projetos" data-i18n="nav.projects">Projetos</a>
+      <a href="#consultoria" data-i18n="nav.consult">Consultoria</a>
+    </nav>
+    <div class="tools">
+      <button class="tool" id="lang-toggle" type="button" aria-label="Switch to English">EN</button>
+      <button class="tool" id="theme-toggle" type="button" aria-label="Alternar tema"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main id="inicio">
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow"><span class="c-clin" data-i18n="hero.eyebrow1">Medicina Intensiva</span> × <span class="c-code" data-i18n="hero.eyebrow2">Tecnologia em Saúde</span></p>
+      <h1><small data-i18n="hero.pre">Dr.</small>Pedro Vinces</h1>
+      <p class="lede" data-i18n-html="hero.lede">Médico intensivista. Coordeno UTIs adulto e escrevo software para <strong>quem cuida de pacientes graves</strong>: menos atrito na rotina, decisões com dados, ética e LGPD desde a primeira linha.</p>
+
+      <div class="monitor" aria-hidden="true">
+        <div class="monitor-bar"><span class="l">II · ECG</span><span class="r">main · build</span></div>
+        <canvas id="trace"></canvas>
+        <div class="seam"></div>
+      </div>
+
+      <div class="split">
+        <div>
+          <p class="eyebrow c-clin" data-i18n="split.clin.k">À beira do leito</p>
+          <h2 data-i18n="split.clin.t">Gestão e assistência em terapia intensiva</h2>
+          <p data-i18n="split.clin.p">Coordenador das UTIs Adulto do Hospital Icaraí e médico rotina da UTI Geral da Clínica São Vicente.</p>
+        </div>
+        <div>
+          <p class="eyebrow c-code" data-i18n="split.code.k">No código</p>
+          <h2 data-i18n="split.code.t">Software desenhado por quem conhece o plantão</h2>
+          <p data-i18n="split.code.p">Sistemas de gestão, plataformas de treinamento e fluxos de notificação para hospitais. Pós-graduando em Inteligência Artificial na Saúde pela PUC-Rio e PUC-RS.</p>
+        </div>
+      </div>
+
+      <dl class="readouts">
+        <div class="readout"><dt>CRM/RJ</dt><dd>94456-4</dd></div>
+        <div class="readout"><dt>RQE</dt><dd>54901</dd></div>
+        <div class="readout"><dt data-i18n="ro.temi">Título · AMIB</dt><dd>TEMI 2024</dd></div>
+        <div class="readout"><dt data-i18n="ro.uff">Medicina · UFF</dt><dd>2012</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="block" id="trajetoria">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow" data-i18n="path.k">Trajetória</p>
+        <h2 data-i18n="path.t">Duas faixas que correm juntas</h2>
+      </div>
+      <div class="lanes">
+        <div class="lh"></div>
+        <div class="lh c-clin" data-i18n="lane.clin">Clínica</div>
+        <div class="lh c-code hide-sm" data-i18n="lane.code">Tecnologia</div>
+
+        <div class="yr" data-i18n="yr.now">Hoje</div>
+        <div class="ev clin"><b data-i18n="ev.icarai.t">Hospital Icaraí</b><span data-i18n="ev.icarai.d">Coordenação das UTIs Adulto</span></div>
+        <div class="ev code after"><b data-i18n="ev.puc.t">Pós-graduação em IA na Saúde</b><span data-i18n="ev.puc.d">Eficiência, Soluções e Ética · PUC-Rio e PUC-RS (em curso)</span></div>
+
+        <div class="yr"></div>
+        <div class="ev clin"><b data-i18n="ev.csv.t">Clínica São Vicente</b><span data-i18n="ev.csv.d">Médico rotina da UTI Geral</span></div>
+        <div class="ev code after"><b data-i18n="ev.apps.t">CTI Manager, CapacitaHub e Vigillant</b><span data-i18n="ev.apps.d">Produtos próprios para gestão, educação e segurança hospitalar</span></div>
+
+        <div class="yr">2024</div>
+        <div class="ev clin"><b data-i18n="ev.temi.t">Título de Especialista em Medicina Intensiva</b><span data-i18n="ev.temi.d">AMIB · RQE 54901</span></div>
+        <div class="ev empty"></div>
+
+        <div class="yr">2012</div>
+        <div class="ev clin"><b data-i18n="ev.uff.t">Graduação em Medicina</b><span data-i18n="ev.uff.d">Universidade Federal Fluminense (UFF)</span></div>
+        <div class="ev empty"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="projetos">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow" data-i18n="proj.k">Projetos</p>
+        <h2 data-i18n="proj.t">Problemas reais de hospital, resolvidos em software</h2>
+        <p data-i18n="proj.p">Cada produto nasceu de uma dor observada na prática, antes de virar linha de código.</p>
+      </div>
+      <div class="projects">
+        <article class="proj">
+          <h3>CTI Manager</h3>
+          <p class="tagline" data-i18n="p1.tag">Gestão e apoio assistencial para UTIs.</p>
+          <dl>
+            <div><dt class="p" data-i18n="lbl.problem">O problema</dt><dd data-i18n="p1.prob">A informação da UTI espalhada entre papel, planilhas e passagens de plantão.</dd></div>
+            <div><dt class="s" data-i18n="lbl.answer">A resposta</dt><dd data-i18n="p1.sol">Gestão da unidade e ferramentas de auxílio à assistência no mesmo ambiente.</dd></div>
+          </dl>
+          <div class="chips"><span class="chip" data-i18n="p1.c1">Gestão de UTI</span><span class="chip k" data-i18n="p1.c2">Apoio assistencial</span></div>
+        </article>
+        <article class="proj">
+          <h3>CapacitaHub</h3>
+          <p class="tagline" data-i18n="p2.tag">Treinamentos internos com certificação digital.</p>
+          <dl>
+            <div><dt class="p" data-i18n="lbl.problem">O problema</dt><dd data-i18n="p2.prob">Treinar equipes é difícil de organizar, acompanhar e comprovar.</dd></div>
+            <div><dt class="s" data-i18n="lbl.answer">A resposta</dt><dd data-i18n="p2.sol">Plataforma online para treinamentos internos, com recursos avançados e certificação digital.</dd></div>
+          </dl>
+          <div class="chips"><span class="chip" data-i18n="p2.c1">Educação continuada</span><span class="chip k" data-i18n="p2.c2">Certificação digital</span></div>
+        </article>
+        <article class="proj">
+          <h3>Vigillant</h3>
+          <p class="tagline" data-i18n="p3.tag">Notificações hospitalares e documentos em um só fluxo.</p>
+          <dl>
+            <div><dt class="p" data-i18n="lbl.problem">O problema</dt><dd data-i18n="p3.prob">Notificações e documentos perdidos entre e-mails, pastas e setores.</dd></div>
+            <div><dt class="s" data-i18n="lbl.answer">A resposta</dt><dd data-i18n="p3.sol">Sistema de notificações com gestão de relacionamento (CRM) e gestão eletrônica de documentos.</dd></div>
+          </dl>
+          <div class="chips"><span class="chip" data-i18n="p3.c1">Notificações</span><span class="chip k" data-i18n="p3.c2">GED</span></div>
+        </article>
+      </div>
+      <p class="note"><b>LGPD</b><span data-i18n="proj.lgpd">Todos os projetos são concebidos sob a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).</span></p>
+    </div>
+  </section>
+
+  <section class="block" id="consultoria">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow" data-i18n="cons.k">Consultoria</p>
+        <h2 data-i18n="cons.t">Para quem constrói ou gerencia saúde</h2>
+        <p data-i18n="cons.p">Apoio a startups de saúde, gestores hospitalares e equipes que precisam traduzir a rotina clínica em produto, processo ou indicador.</p>
+      </div>
+      <div class="areas">
+        <div class="area">
+          <svg viewBox="0 0 24 24" fill="none" style="stroke:var(--clin)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2-5 3 10 2-5h7"/></svg>
+          <h3 data-i18n="a1.t">Gestão de UTI</h3>
+          <p data-i18n="a1.p">Fluxos, protocolos e indicadores de terapia intensiva, vistos de dentro da coordenação.</p>
+        </div>
+        <div class="area">
+          <svg viewBox="0 0 24 24" fill="none" style="stroke:var(--code)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg>
+          <h3 data-i18n="a2.t">Produto digital em saúde</h3>
+          <p data-i18n="a2.p">Validação clínica de ideias, desenho de fluxo e prioridades para quem desenvolve software hospitalar.</p>
+        </div>
+        <div class="area">
+          <svg viewBox="0 0 24 24" fill="none" style="stroke:var(--code)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>
+          <h3 data-i18n="a3.t">Inteligência artificial aplicada</h3>
+          <p data-i18n="a3.p">Onde a IA ajuda o cuidado de verdade, onde não ajuda, e como implantar com ética e segurança.</p>
+        </div>
+        <div class="area">
+          <svg viewBox="0 0 24 24" fill="none" style="stroke:var(--clin)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          <h3 data-i18n="a4.t">Dados e LGPD</h3>
+          <p data-i18n="a4.p">Tratamento de dados de saúde com privacidade desde a concepção do sistema.</p>
+        </div>
+      </div>
+      <div class="cta">
+        <a class="btn primary" href="https://www.linkedin.com/in/pedrovinces" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.77 2.65 4.77 6.1V21h-4v-4.9c0-1.17-.02-2.68-1.63-2.68-1.64 0-1.89 1.28-1.89 2.6V21h-4z"/></svg>
+          <span data-i18n="cta.li">Conversar pelo LinkedIn</span>
+        </a>
+        <a class="btn" href="https://github.com/pedrovinces" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="legal">
+      <strong>Dr. Pedro Vinces · <span data-i18n="ft.spec">Médico intensivista</span></strong>
+      <span>CRM/RJ 94456-4 · RQE 54901 (<span data-i18n="ft.rqe">Medicina Intensiva</span>)</span>
+      <span data-i18n="ft.cfm">Conteúdo de caráter informativo, conforme a Resolução CFM nº 2.336/2023.</span>
+    </div>
+    <div class="links">
+      <a href="https://www.linkedin.com/in/pedrovinces" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/pedrovinces" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://orcid.org/0009-0008-5759-0853" target="_blank" rel="noopener">ORCID</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var store = {
+    get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+
+  /* Idioma */
+  var EN = {
+    "nav.path": "Path", "nav.projects": "Projects", "nav.consult": "Consulting",
+    "hero.eyebrow1": "Critical Care Medicine", "hero.eyebrow2": "Health Technology", "hero.pre": "Dr.",
+    "hero.lede": "Intensive care physician. I run adult ICUs and write software for <strong>the people who care for critically ill patients</strong>: less friction in daily work, decisions backed by data, ethics and privacy from the first line.",
+    "split.clin.k": "At the bedside", "split.clin.t": "Critical care management and practice",
+    "split.clin.p": "Head of the Adult ICUs at Hospital Icaraí and attending physician at the General ICU of Clínica São Vicente.",
+    "split.code.k": "In the code", "split.code.t": "Software designed by someone who knows the night shift",
+    "split.code.p": "Management systems, training platforms and notification workflows for hospitals. Postgraduate student in Artificial Intelligence in Healthcare at PUC-Rio and PUC-RS.",
+    "ro.temi": "Board · AMIB", "ro.uff": "MD · UFF",
+    "path.k": "Path", "path.t": "Two tracks running side by side",
+    "lane.clin": "Clinical", "lane.code": "Technology", "yr.now": "Now",
+    "ev.icarai.t": "Hospital Icaraí", "ev.icarai.d": "Head of Adult ICUs",
+    "ev.puc.t": "Postgraduate program in AI in Healthcare", "ev.puc.d": "Efficiency, Solutions and Ethics · PUC-Rio and PUC-RS (ongoing)",
+    "ev.csv.t": "Clínica São Vicente", "ev.csv.d": "Attending physician, General ICU",
+    "ev.apps.t": "CTI Manager, CapacitaHub and Vigillant", "ev.apps.d": "Own products for hospital management, education and safety",
+    "ev.temi.t": "Board certification in Critical Care Medicine", "ev.temi.d": "AMIB · RQE 54901",
+    "ev.uff.t": "Doctor of Medicine (MD)", "ev.uff.d": "Universidade Federal Fluminense (UFF)",
+    "proj.k": "Projects", "proj.t": "Real hospital problems, solved in software",
+    "proj.p": "Each product started from a pain seen in practice, before it became code.",
+    "lbl.problem": "The problem", "lbl.answer": "The answer",
+    "p1.tag": "Management and clinical support for ICUs.",
+    "p1.prob": "ICU information scattered across paper, spreadsheets and shift handoffs.",
+    "p1.sol": "Unit management and clinical support tools in a single place.",
+    "p1.c1": "ICU management", "p1.c2": "Clinical support",
+    "p2.tag": "In-house training with digital certificates.",
+    "p2.prob": "Staff training is hard to organize, track and prove.",
+    "p2.sol": "Online platform for in-house training, with advanced features and digital certification.",
+    "p2.c1": "Continuing education", "p2.c2": "Digital certificates",
+    "p3.tag": "Hospital notifications and documents in one flow.",
+    "p3.prob": "Notifications and documents lost between emails, folders and departments.",
+    "p3.sol": "Notification system with relationship management (CRM) and electronic document management.",
+    "p3.c1": "Notifications", "p3.c2": "Document management",
+    "proj.lgpd": "Every project is designed under Brazil's General Data Protection Law (LGPD, Law 13,709/2018).",
+    "cons.k": "Consulting", "cons.t": "For those who build or manage healthcare",
+    "cons.p": "Support for health startups, hospital managers and teams who need to turn clinical routine into product, process or metric.",
+    "a1.t": "ICU management", "a1.p": "Critical care workflows, protocols and metrics, seen from inside the coordination role.",
+    "a2.t": "Digital health products", "a2.p": "Clinical validation of ideas, workflow design and priorities for teams building hospital software.",
+    "a3.t": "Applied artificial intelligence", "a3.p": "Where AI truly helps patient care, where it does not, and how to deploy it ethically and safely.",
+    "a4.t": "Data and privacy", "a4.p": "Handling health data with privacy built into the system from day one.",
+    "cta.li": "Talk on LinkedIn",
+    "ft.spec": "Intensive care physician", "ft.rqe": "Critical Care Medicine",
+    "ft.cfm": "Informational content, in accordance with Brazilian Federal Council of Medicine Resolution 2,336/2023."
+  };
+  var PT = {};
+  document.querySelectorAll("[data-i18n],[data-i18n-html]").forEach(function (el) {
+    var k = el.getAttribute("data-i18n") || el.getAttribute("data-i18n-html");
+    if (!(k in PT)) PT[k] = el.innerHTML;
+  });
+  var langBtn = document.getElementById("lang-toggle");
+  function setLang(lang) {
+    var dict = lang === "en" ? EN : PT;
+    document.querySelectorAll("[data-i18n],[data-i18n-html]").forEach(function (el) {
+      var k = el.getAttribute("data-i18n") || el.getAttribute("data-i18n-html");
+      if (dict[k] != null) el.innerHTML = dict[k];
+    });
+    document.documentElement.lang = lang === "en" ? "en" : "pt-BR";
+    langBtn.textContent = lang === "en" ? "PT" : "EN";
+    langBtn.setAttribute("aria-label", lang === "en" ? "Mudar para português" : "Switch to English");
+    store.set("pv-lang", lang);
+  }
+  var savedLang = store.get("pv-lang") || "pt";
+  if (savedLang === "en") setLang("en");
+  langBtn.addEventListener("click", function () { setLang(document.documentElement.lang === "en" ? "pt" : "en"); });
+
+  /* Tema */
+  var root = document.documentElement;
+  var themeBtn = document.getElementById("theme-toggle");
+  var savedTheme = store.get("pv-theme");
+  if (savedTheme === "light" || savedTheme === "dark") root.setAttribute("data-theme", savedTheme);
+  themeBtn.addEventListener("click", function () {
+    var cur = root.getAttribute("data-theme") ||
+      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    var next = cur === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    store.set("pv-theme", next);
+  });
+
+  /* Traçado: ECG à esquerda, sinal digital à direita */
+  var cv = document.getElementById("trace");
+  var ctx = cv.getContext("2d");
+  var W, H, dpr, ys, cursor = 0;
+  var PERIOD = 170;
+  var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function gauss(x, mu, s) { return Math.exp(-((x - mu) * (x - mu)) / (2 * s * s)); }
+  function ecg(t) {
+    var p = t % PERIOD / PERIOD;
+    return 0.12 * gauss(p, 0.18, 0.025)
+         - 0.10 * gauss(p, 0.30, 0.008)
+         + 1.00 * gauss(p, 0.33, 0.010)
+         - 0.22 * gauss(p, 0.36, 0.010)
+         + 0.22 * gauss(p, 0.56, 0.045);
+  }
+  var BITS = "0101000001010110"; /* "PV" em ASCII */
+  function digital(t) {
+    var i = Math.floor(t / 14) % BITS.length;
+    return BITS[i] === "1" ? 0.55 : 0.05;
+  }
+  function sample(x) {
+    var a = W * 0.44, b = W * 0.56;
+    if (x <= a) return ecg(x);
+    if (x >= b) return digital(x);
+    var m = (x - a) / (b - a);
+    m = m * m * (3 - 2 * m);
+    return ecg(x) * (1 - m) + digital(x) * m;
+  }
+  function yOf(v) { return H * 0.72 - v * H * 0.5; }
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ys = new Float32Array(Math.ceil(W) + 1);
+    for (var x = 0; x <= W; x++) ys[x] = yOf(sample(x));
+    draw();
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    var g = ctx.createLinearGradient(0, 0, W, 0);
+    g.addColorStop(0.44, "#3fd0a6");
+    g.addColorStop(0.56, "#f2b84b");
+    ctx.strokeStyle = g; ctx.lineWidth = 2; ctx.lineJoin = "round";
+    ctx.shadowColor = "rgba(63,208,166,0.35)"; ctx.shadowBlur = 6;
+    var gap = 26;
+    ctx.beginPath();
+    var pen = false;
+    for (var x = 0; x <= W; x++) {
+      var hidden = !still && x > cursor && x < cursor + gap;
+      if (hidden) { pen = false; continue; }
+      if (!pen) { ctx.moveTo(x, ys[x]); pen = true; } else ctx.lineTo(x, ys[x]);
+    }
+    ctx.stroke();
+    if (!still) {
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = cursor < W / 2 ? "#3fd0a6" : "#f2b84b";
+      ctx.beginPath(); ctx.arc(cursor, ys[Math.floor(cursor)], 2.6, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+  var last = 0;
+  function tick(ts) {
+    if (!last) last = ts;
+    cursor += (ts - last) * 0.16;
+    last = ts;
+    if (cursor > W) cursor = 0;
+    draw();
+    requestAnimationFrame(tick);
+  }
+  resize();
+  window.addEventListener("resize", resize);
+  if (!still) requestAnimationFrame(tick);
+})();
+</script>
+<!-- page:end -->
+</body>
+</html>
