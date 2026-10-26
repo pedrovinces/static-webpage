@@ -143,11 +143,12 @@ p { margin: 0; }
 .portrait { position: relative; justify-self: end; width: 100%; max-width: 22rem; aspect-ratio: 4 / 5; margin: 0; }
 .portrait::before {
   content: ""; position: absolute; inset: 18% 6% 0; border-radius: 50% 50% 0 0;
-  background: radial-gradient(closest-side, rgba(57,245,168,0.22), transparent); filter: blur(10px);
+  background: radial-gradient(closest-side, rgba(96,160,230,0.2), transparent); filter: blur(12px);
 }
 .portrait img {
   position: relative; display: block; width: 100%; height: 100%; object-fit: cover; object-position: top;
-  -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent 100%); mask-image: linear-gradient(180deg, #000 72%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 56% 66% at 50% 34%, #000 62%, transparent 100%);
+  mask-image: radial-gradient(ellipse 56% 66% at 50% 34%, #000 62%, transparent 100%);
 }
 .ecg-lane { height: clamp(100px, 11vw, 140px); margin-top: 0.5rem; }
 
@@ -160,7 +161,7 @@ p { margin: 0; }
 @media (max-width: 760px) {
   .hero-grid { grid-template-columns: 1fr; gap: 0; }
   .portrait { order: -1; justify-self: start; max-width: 9rem; aspect-ratio: auto; margin-bottom: 1.2rem; }
-  .portrait img { border-radius: 50%; aspect-ratio: 1; height: auto; object-position: 50% 6%; -webkit-mask-image: none; mask-image: none; border: 1px solid rgba(57,245,168,0.35); background: #071310; }
+  .portrait img { border-radius: 50%; aspect-ratio: 1; height: auto; object-position: 50% 6%; -webkit-mask-image: none; mask-image: none; border: 1px solid rgba(96,160,230,0.4); background: #070d16; }
   .portrait::before { display: none; }
   .ecg-lane { margin-top: 0.5rem; }
   .vitals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -194,28 +195,20 @@ section.block { padding-block: clamp(4rem, 9vw, 7rem) 0; }
 .role span { color: var(--muted); font-size: 0.95rem; }
 
 /* Projetos */
-.projects { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+.projects { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
 @media (max-width: 900px) { .projects { grid-template-columns: 1fr; } }
 .proj {
-  --mx: 50%; --my: 0%;
-  position: relative; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line);
-  overflow: hidden; min-width: 0; transition: transform .5s cubic-bezier(.2,.8,.2,1), border-color .4s;
+  display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); gap: 0.9rem; align-items: center;
+  padding: 0.85rem 1rem; border-radius: 12px; background: var(--surface); border: 1px solid var(--line);
+  min-width: 0; transition: border-color .3s, transform .4s cubic-bezier(.2,.8,.2,1);
 }
-.proj::before {
-  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .4s;
-  background: radial-gradient(380px circle at var(--mx) var(--my), var(--glow), transparent 60%);
-}
-.proj:hover { transform: translateY(-5px); border-color: color-mix(in srgb, var(--phos-ink) 40%, var(--line)); }
-.proj:hover::before { opacity: 1; }
-.screen { background: var(--scr); height: 110px; position: relative; border-bottom: 1px solid var(--line); }
-.screen .ch { position: absolute; top: 0.75rem; left: 1rem; font: 500 0.66rem/1 var(--f-mono); letter-spacing: 0.14em; color: var(--scr-muted); }
-.screen svg { position: absolute; left: 0; right: 0; bottom: 12px; width: 100%; height: 70px; }
-.screen svg path { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 700; animation: draw 5s linear infinite; }
-@keyframes draw { from { stroke-dashoffset: 700; } to { stroke-dashoffset: -700; } }
-.proj .body { padding: 1.3rem 1.4rem 1.5rem; display: grid; gap: 0.4rem; position: relative; }
-.proj h3 { font-size: 1.3rem; font-weight: 600; }
-.proj p { color: var(--muted); }
-.lgpd { margin-top: 1.5rem; font: 500 0.78rem/1.4 var(--f-mono); letter-spacing: 0.04em; color: var(--muted); }
+.proj:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--phos-ink) 40%, var(--line)); }
+.proj svg { width: 3.5rem; height: 2.5rem; background: var(--scr); border-radius: 8px; display: block; }
+.proj svg path { fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 160; animation: draw 4s linear infinite; }
+@keyframes draw { from { stroke-dashoffset: 160; } to { stroke-dashoffset: -160; } }
+.proj h3 { font-size: 1.02rem; font-weight: 600; letter-spacing: -0.01em; }
+.proj p { color: var(--muted); font-size: 0.88rem; line-height: 1.35; }
+.lgpd { margin-top: 1.1rem; font: 500 0.76rem/1.4 var(--f-mono); letter-spacing: 0.04em; color: var(--muted); }
 .lgpd b { color: var(--phos-ink); font-weight: 500; }
 
 /* Consultoria */
@@ -249,8 +242,8 @@ footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns:
 @keyframes rise { from { opacity: 0.2; transform: translateY(32px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .screen svg path, .typer .caret { animation: none; }
-  .screen svg path { stroke-dasharray: none; }
+  .proj svg path, .typer .caret { animation: none; }
+  .proj svg path { stroke-dasharray: none; }
 }
 </style>
 
@@ -344,25 +337,16 @@ footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns:
       </div>
       <div class="projects">
         <article class="proj rv">
-          <div class="screen" aria-hidden="true">
-            <span class="ch">CH1</span>
-            <svg viewBox="0 0 300 70" preserveAspectRatio="none"><path stroke="#39f5a8" d="M0 46 H30 Q38 36 46 46 H58 L64 54 L72 8 L80 58 L86 46 H112 Q126 30 140 46 H170 Q178 36 186 46 H198 L204 54 L212 8 L220 58 L226 46 H252 Q266 30 280 46 H300"/></svg>
-          </div>
-          <div class="body"><h3>CTI Manager</h3><p data-i18n="p1">Gestão e apoio assistencial para UTIs.</p></div>
+          <svg viewBox="0 0 56 40" aria-hidden="true"><path stroke="#39f5a8" d="M4 26 H14 L17 29 L21 9 L25 31 L28 26 H34 Q38 20 42 26 H52"/></svg>
+          <div><h3>CTI Manager</h3><p data-i18n="p1">Gestão e apoio assistencial para UTIs.</p></div>
         </article>
         <article class="proj rv">
-          <div class="screen" aria-hidden="true">
-            <span class="ch">CH2</span>
-            <svg viewBox="0 0 300 70" preserveAspectRatio="none"><path stroke="#f5b544" d="M0 62 H40 V54 H80 V46 H120 V38 H160 V30 H200 V22 H240 V14 H270 L278 6 L286 14 H300"/></svg>
-          </div>
-          <div class="body"><h3>CapacitaHub</h3><p data-i18n="p2">Treinamentos internos com certificação digital.</p></div>
+          <svg viewBox="0 0 56 40" aria-hidden="true"><path stroke="#f5b544" d="M4 32 H12 V27 H20 V22 H28 V17 H36 V12 H44 L48 8 L52 12"/></svg>
+          <div><h3>CapacitaHub</h3><p data-i18n="p2">Treinamentos internos com certificação digital.</p></div>
         </article>
         <article class="proj rv">
-          <div class="screen" aria-hidden="true">
-            <span class="ch">CH3</span>
-            <svg viewBox="0 0 300 70" preserveAspectRatio="none"><path stroke="#39f5a8" d="M0 46 H50 L56 16 L62 46 H120 L126 16 L132 46 H140 L146 16 L152 46 H220 L226 16 L232 46 H300"/></svg>
-          </div>
-          <div class="body"><h3>Vigillant</h3><p data-i18n="p3">Notificações hospitalares e gestão de documentos.</p></div>
+          <svg viewBox="0 0 56 40" aria-hidden="true"><path stroke="#39f5a8" d="M4 26 H12 L15 12 L18 26 H28 L31 12 L34 26 H37 L40 12 L43 26 H52"/></svg>
+          <div><h3>Vigillant</h3><p data-i18n="p3">Notificações hospitalares e gestão de documentos.</p></div>
         </article>
       </div>
       <p class="lgpd rv"><b>LGPD</b> · <span data-i18n="lgpd">Lei nº 13.709/2018 em todos os projetos.</span></p>
