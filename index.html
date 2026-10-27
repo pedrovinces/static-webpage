@@ -20,18 +20,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;600&display=swap">
 <style>
-/* Layout: página como um traçado de ECG impresso. Tema claro = papel milimetrado; tema escuro = tela do monitor.
+/* Layout: abertura editorial seguida de uma faixa de monitor multiparamétrico (a tela é escura nos dois temas).
    Grade editorial de duas colunas (rótulo | conteúdo), fios finos no lugar de cartões. */
 :root {
   --bg: #fbfbfa;
-  --paper: #fffaf9;
   --ink: #141b20;
   --muted: #5e6870;
   --rule: #e4e2e0;
-  --accent: #c63f2f;          /* vermelho do papel de ECG */
-  --trace: #141b20;
-  --grid-minor: rgba(214, 96, 84, 0.12);
-  --grid-major: rgba(214, 96, 84, 0.26);
+  --accent: #c63f2f;
+  --screen: #070b0d;          /* tela do monitor, igual nos dois temas */
+  --screen-ink: #c9d4d2;
   --f-display: "Sora", "Segoe UI", Arial, sans-serif;
   --f-body: "Instrument Sans", "Segoe UI", Roboto, sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -39,16 +37,14 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0b1012; --paper: #090d0e; --ink: #e2e8e6; --muted: #8b9795; --rule: #1d282b;
-    --accent: #6fdcaa; --trace: #6fdcaa;
-    --grid-minor: rgba(111, 220, 170, 0.06); --grid-major: rgba(111, 220, 170, 0.13);
+    --bg: #0b1012; --ink: #e2e8e6; --muted: #8b9795; --rule: #1d282b;
+    --accent: #6fdcaa;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0b1012; --paper: #090d0e; --ink: #e2e8e6; --muted: #8b9795; --rule: #1d282b;
-  --accent: #6fdcaa; --trace: #6fdcaa;
-  --grid-minor: rgba(111, 220, 170, 0.06); --grid-major: rgba(111, 220, 170, 0.13);
+  --bg: #0b1012; --ink: #e2e8e6; --muted: #8b9795; --rule: #1d282b;
+  --accent: #6fdcaa;
   color-scheme: dark;
 }
 
@@ -109,23 +105,33 @@ p { margin: 0; }
   .portrait { order: -1; width: 6rem; margin-bottom: 1.25rem; }
 }
 
-/* Faixa de ritmo (papel milimetrado) */
-.strip {
-  position: relative; height: clamp(150px, 16vw, 210px);
-  border-block: 1px solid var(--rule);
-  background-color: var(--paper);
-  background-image:
-    linear-gradient(var(--grid-major) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
-    linear-gradient(var(--grid-minor) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
-  background-size: 30px 30px, 30px 30px, 6px 6px, 6px 6px;
-  background-position: -1px -1px;
+/* Monitor multiparamétrico (tela escura nos dois temas) */
+.monitor { background: var(--screen); color: var(--screen-ink); border-block: 1px solid var(--rule); }
+.monitor .mon-in {
+  display: grid; grid-template-columns: minmax(0, 1fr) 15rem; height: clamp(210px, 20vw, 270px);
+  padding-right: max(24px, calc((100vw - var(--wrap)) / 2 + 24px));
 }
-.strip canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.strip .meta { position: absolute; inset: 0.7rem 0 auto; pointer-events: none; }
-.strip .meta .wrap { display: flex; justify-content: space-between; gap: 1rem; font: 400 0.7rem/1 var(--f-mono); letter-spacing: 0.06em; color: var(--muted); }
-.strip .meta span:first-child { color: var(--accent); }
+.waves { position: relative; min-width: 0; }
+.waves canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.waves .ch { position: absolute; left: max(24px, calc((100vw - var(--wrap)) / 2 + 24px)); font: 500 0.66rem/1 var(--f-mono); letter-spacing: 0.08em; }
+.waves .ch:nth-of-type(1) { top: 0.6rem; }
+.waves .ch:nth-of-type(2) { top: calc(33.33% + 0.6rem); }
+.waves .ch:nth-of-type(3) { top: calc(66.66% + 0.6rem); }
+.c1 { color: #5fe0a0; } .c2 { color: #ff6b6b; } .c3 { color: #59cff0; }
+.nums { display: grid; grid-template-rows: repeat(3, 1fr); border-left: 1px solid rgba(201, 212, 210, 0.12); }
+.nums .n { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; padding: 0.6rem 0 0.6rem 1.1rem; min-width: 0; }
+.nums .n + .n { border-top: 1px solid rgba(201, 212, 210, 0.08); }
+.nums span { font: 500 0.68rem/1 var(--f-mono); letter-spacing: 0.08em; align-self: flex-start; }
+.nums b { font: 500 clamp(1.5rem, 1rem + 1.6vw, 2.3rem)/1 var(--f-display); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.nums b small { font-size: 0.5em; margin-left: 0.3em; opacity: 0.8; }
+@media (max-width: 760px) {
+  .monitor .mon-in { grid-template-columns: 1fr; height: auto; padding-right: 0; }
+  .waves { height: 180px; order: 2; }
+  .nums { grid-template-rows: none; grid-template-columns: repeat(3, minmax(0, 1fr)); border-left: 0; border-bottom: 1px solid rgba(201, 212, 210, 0.12); }
+  .nums .n { flex-direction: column; gap: 0.35rem; padding: 0.7rem 0 0.7rem 24px; }
+  .nums .n + .n { border-left: 1px solid rgba(201, 212, 210, 0.08); border-top: 0; padding-left: 0.9rem; }
+  .nums b { font-size: 1.35rem; }
+}
 
 /* Registros */
 .regs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; border-bottom: 1px solid var(--rule); }
@@ -237,9 +243,20 @@ footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns:
     </div>
   </section>
 
-  <div class="strip" id="strip" aria-hidden="true">
-    <canvas></canvas>
-    <div class="meta"><div class="wrap"><span>DII · 25 mm/s · 10 mm/mV</span><span data-i18n="strip.code">código</span></div></div>
+  <div class="monitor" id="strip" aria-hidden="true">
+    <div class="mon-in">
+      <div class="waves">
+        <canvas></canvas>
+        <span class="ch c1">II</span>
+        <span class="ch c2" data-i18n="m.art">PA mmHg</span>
+        <span class="ch c3">Pleth</span>
+      </div>
+      <div class="nums">
+        <div class="n c1"><span data-i18n="m.hr">FC</span><b id="hr">72</b></div>
+        <div class="n c2"><span data-i18n="m.bp">PA</span><b>118/72<small>(87)</small></b></div>
+        <div class="n c3"><span>SpO₂</span><b>97<small>%</small></b></div>
+      </div>
+    </div>
   </div>
 
   <div class="wrap">
@@ -338,7 +355,7 @@ footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns:
     "nav.work": "Work", "nav.projects": "Projects", "nav.consult": "Consulting",
     "hero.k": "Critical Care Medicine and Health Technology",
     "hero.lede": "Intensive care, in every language.",
-    "go.proj": "Projects", "go.consult": "Consulting", "strip.code": "code",
+    "go.proj": "Projects", "go.consult": "Consulting", "m.art": "ABP mmHg", "m.hr": "HR", "m.bp": "ABP",
     "r.spec": "Board certification", "r.grad": "Medical degree", "r.uff": "MD · UFF",
     "l.work": "Work", "c.clin": "Clinical", "c.tech": "Technology",
     "w1": "Head of Adult ICUs", "w2": "Attending physician, General ICU",
@@ -353,10 +370,6 @@ footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns:
     "go.li": "Talk on LinkedIn",
     "ft.spec": "Critical Care Medicine",
     "ft.cfm": "Informational content, in accordance with Federal Council of Medicine Resolution 2,336/2023."
-  };
-  var CODE = {
-    pt: "if (lactato > 2) { reavaliar(perfusao); }  const meta = { pam: 65, spo2: [92, 96] };  ",
-    en: "if (lactate > 2) { reassess(perfusion); }  const target = { map: 65, spo2: [92, 96] };  "
   };
   var PT = {};
   document.querySelectorAll("[data-i18n]").forEach(function (el) { PT[el.getAttribute("data-i18n")] = el.innerHTML; });
@@ -389,22 +402,31 @@ footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns:
     var next = cur === "dark" ? "light" : "dark";
     root.setAttribute("data-theme", next);
     store.set("pv-theme", next);
-    if (window.__strip) window.__strip.colors();
   });
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () { if (window.__strip) window.__strip.colors(); });
 
   /* Cabeçalho */
   var top = document.getElementById("top");
   function onScroll() { top.classList.toggle("scrolled", window.scrollY > 8); }
   window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
-  /* Faixa de ritmo: a pena risca o papel parado da esquerda para a direita, como no monitor.
-     No meio da faixa o batimento relaxa e a pena passa a escrever código sobre a mesma curva. */
+  /* Monitor multiparamétrico: a varredura risca ECG, pressão arterial e pletismografia ao mesmo tempo.
+     No meio da tela cada curva relaxa e a varredura passa a escrever código na cor do próprio canal. */
   var strip = document.getElementById("strip");
-  var cv = strip.querySelector("canvas"), cx = cv.getContext("2d");
-  var W, H, dpr, P, AMP, BASE, SPEED, SPACING = 8.2, GAP = 26;
-  var ys, chars, cursor = 0, phase = 0.05, rr = 830, beatAmp = 1, textIdx = 0;
-  var ink = "#141b20", running = true, last = 0;
+  var area = strip.querySelector(".waves");
+  var cv = area.querySelector("canvas"), cx = cv.getContext("2d");
+  var hrEl = document.getElementById("hr");
+  var CH = [
+    { color: "#5fe0a0", wave: ecg,   soft: function (p) { return 0.16 * g(p, 0.31, 0.07) + 0.07 * g(p, 0.58, 0.07); }, base: 0.70, amp: 0.62 },
+    { color: "#ff6b6b", wave: art,   soft: function (p) { return 0.30 + 0.12 * g(p, 0.46, 0.12); },                    base: 0.86, amp: 0.66 },
+    { color: "#59cff0", wave: pleth, soft: function (p) { return 0.25 + 0.12 * g(p, 0.56, 0.12); },                    base: 0.86, amp: 0.62 }
+  ];
+  var CODE = {
+    pt: ["if (fc > 100) { alertar(\"taquicardia\"); }   ", "const pam = (pas + 2 * pad) / 3;   ", "spo2.alvo = [92, 96];   "],
+    en: ["if (hr > 100) { alert(\"tachycardia\"); }   ", "const map = (sbp + 2 * dbp) / 3;   ", "spo2.target = [92, 96];   "]
+  };
+  var W, H, RH, dpr, SPEED, SPACING = 7.6, GAP = 22;
+  var ys, chars, cursor = 0, phase = 0.05, rr = 830, beatAmp = 1, textIdx = [0, 0, 0], hrShown = 72;
+  var running = true, last = 0;
 
   function g(x, mu, s) { return Math.exp(-((x - mu) * (x - mu)) / (2 * s * s)); }
   function ecg(p) {
@@ -412,55 +434,67 @@ footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns:
          + 1.00 * g(p, 0.31, 0.011) - 0.24 * g(p, 0.335, 0.011)
          + 0.22 * g(p, 0.56, 0.05);
   }
-  /* forma para onde o batimento relaxa ao virar texto: o mesmo ciclo, sem a ponta do QRS */
-  function soft(p) { return 0.16 * g(p, 0.31, 0.07) + 0.07 * g(p, 0.58, 0.07); }
-  function smooth(a, b, x) { var t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
-  function zone() { var n = W < 640; return [W * (n ? 0.24 : 0.36), W * (n ? 0.72 : 0.64)]; }
-
-  function colors() {
-    ink = getComputedStyle(root).getPropertyValue("--trace").trim() || "#141b20";
-    draw();
+  /* pressão arterial invasiva: subida rápida, pico sistólico, incisura dicrótica e descida diastólica */
+  function art(p) {
+    var q = (p - 0.36 + 1) % 1;
+    var up = q < 0.09 ? q / 0.09 : 0;
+    var sys = q < 0.09 ? 0.15 + 0.85 * up * up * (3 - 2 * up) : 0.15 + 0.85 * Math.exp(-(q - 0.09) / 0.11);
+    var dic = 0.16 * g(q, 0.30, 0.035) - 0.05 * g(q, 0.25, 0.012);
+    var dia = 0.22 * Math.exp(-q / 0.9) * (q > 0.09 ? 1 : up);
+    return Math.max(0.12, sys * 0.8 + dic + dia);
   }
+  /* pletismografia: mais lenta e arredondada, atrasada em relação ao QRS */
+  function pleth(p) {
+    var q = (p - 0.42 + 1) % 1;
+    return 0.12 + 0.78 * g(q, 0.16, 0.075) + 0.22 * g(q, 0.36, 0.07) + 0.1 * Math.exp(-q / 0.5) * (q > 0.16 ? 1 : 0);
+  }
+  function smooth(a, b, x) { var t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
+  function zone() { var n = W < 560; return [W * (n ? 0.3 : 0.42), W * (n ? 0.78 : 0.72)]; }
   function hexA(c, a) {
-    if (c[0] !== "#") return c;
-    var n = parseInt(c.length === 4 ? c.slice(1).replace(/./g, "$&$&") : c.slice(1), 16);
+    var n = parseInt(c.slice(1), 16);
     return "rgba(" + (n >> 16 & 255) + "," + (n >> 8 & 255) + "," + (n & 255) + "," + a + ")";
   }
 
-  /* a pena avança dx pixels: o ritmo segue no tempo, com leve variação entre batimentos */
+  /* a varredura avança dx pixels; o ciclo cardíaco segue no tempo, com leve variação entre batimentos */
   function pen(dx) {
-    var z = zone(), code = CODE[lang];
+    var z = zone();
     for (var i = 0; i < dx; i++) {
       var x = Math.floor(cursor);
-      phase += 1 / SPEED / rr;  /* 1 px de papel, convertido em fração do ciclo cardíaco */
-      if (phase >= 1) { phase -= 1; rr = 830 * (0.96 + Math.random() * 0.08); beatAmp = 0.94 + Math.random() * 0.1; }
+      phase += 1 / SPEED / rr;
+      if (phase >= 1) {
+        phase -= 1;
+        rr = 830 * (0.95 + Math.random() * 0.1);
+        beatAmp = 0.94 + Math.random() * 0.1;
+        hrShown = Math.round(hrShown * 0.6 + (60000 / rr) * 0.4);
+        if (hrEl) hrEl.textContent = hrShown;
+      }
       if (x <= W) {
-        var m = smooth(z[0] - 90, z[0] + (z[1] - z[0]) * 0.55, x);  /* o QRS se arredonda antes de as letras ganharem corpo */
-        ys[x] = BASE - (ecg(phase) * beatAmp * (1 - m) + soft(phase) * m) * AMP;
+        var m = smooth(z[0] - 70, z[0] + (z[1] - z[0]) * 0.55, x);
+        for (var c = 0; c < 3; c++) {
+          var ch = CH[c], top = c * RH;
+          ys[c][x] = top + RH * ch.base - (ch.wave(phase) * beatAmp * (1 - m) + ch.soft(phase) * m) * RH * ch.amp;
+        }
         var k = Math.round(x / SPACING);
         if (Math.abs(k * SPACING - x) < 0.5 && x >= z[0]) {
-          var ch = code[textIdx % code.length]; textIdx++;
-          chars[k] = ch;
+          for (var c2 = 0; c2 < 3; c2++) { var s = CODE[lang][c2]; chars[c2][k] = s[textIdx[c2]++ % s.length]; }
         }
       }
       cursor += 1;
-      if (cursor > W + GAP) { cursor = 0; }
+      if (cursor > W + GAP) cursor = 0;
     }
   }
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = strip.clientWidth; H = strip.clientHeight;
+    W = area.clientWidth; H = area.clientHeight; RH = H / 3;
     cv.width = W * dpr; cv.height = H * dpr;
     cx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    P = 30 * Math.round(Math.max(150, Math.min(240, W / 5.2)) / 30);  /* um batimento ocupa um múltiplo da grade grande */
-    SPEED = P / 830;                                                    /* px por ms, para 72 bpm */
-    AMP = H * 0.5; BASE = H * 0.68;
-    ys = new Float32Array(W + 2).fill(NaN);
-    chars = {};
-    /* a faixa abre já riscada, como uma varredura anterior; a pena recomeça da esquerda */
+    SPEED = 0.2;                               /* px por ms: cerca de 166 px por batimento a 72 bpm */
+    ys = [0, 1, 2].map(function () { return new Float32Array(W + 2).fill(NaN); });
+    chars = [{}, {}, {}]; textIdx = [0, 0, 0];
+    /* a tela abre já preenchida por uma varredura anterior; a nova começa da esquerda */
     cursor = 0; pen(W + 1); cursor = 0;
-    colors();
+    draw();
   }
 
   function draw() {
@@ -468,47 +502,49 @@ footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns:
     cx.clearRect(0, 0, W, H);
     var z = zone(), a = z[0], b = z[1], live = !still;
     function hidden(x) { return live && x > cursor && x < cursor + GAP; }
+    cx.lineWidth = 1.6; cx.lineJoin = "round"; cx.lineCap = "round";
+    cx.textAlign = "center"; cx.textBaseline = "middle";
+    for (var c = 0; c < 3; c++) {
+      var col = CH[c].color, y = ys[c];
+      var grad = cx.createLinearGradient(a, 0, b, 0);
+      for (var i = 0; i <= 8; i++) { var t = i / 8; grad.addColorStop(t, hexA(col, (1 - t * t * (3 - 2 * t)).toFixed(3))); }
+      cx.strokeStyle = grad;
+      cx.beginPath();
+      var down = false;
+      for (var x = 0; x <= Math.min(b, W); x++) {
+        if (hidden(x) || isNaN(y[x])) { down = false; continue; }
+        if (!down) { cx.moveTo(x, y[x]); down = true; } else cx.lineTo(x, y[x]);
+      }
+      cx.stroke();
 
-    /* linha: some num degradê longo dentro da zona de transição */
-    var grad = cx.createLinearGradient(a, 0, b, 0);
-    for (var i = 0; i <= 8; i++) { var t = i / 8; grad.addColorStop(t, hexA(ink, (1 - t * t * (3 - 2 * t)).toFixed(3))); }
-    cx.strokeStyle = grad; cx.lineWidth = 1.7; cx.lineJoin = "round"; cx.lineCap = "round";
-    cx.beginPath();
-    var down = false;
-    for (var x = 0; x <= Math.min(b, W); x++) {
-      if (hidden(x) || isNaN(ys[x])) { down = false; continue; }
-      if (!down) { cx.moveTo(x, ys[x]); down = true; } else cx.lineTo(x, ys[x]);
-    }
-    cx.stroke();
-
-    /* letras: a pena escreve cada caractere sobre a curva, que ganha corpo enquanto a linha some */
-    cx.fillStyle = ink; cx.textAlign = "center"; cx.textBaseline = "middle";
-    for (var k = Math.ceil(a / SPACING); k * SPACING <= W; k++) {
-      var gx = Math.round(k * SPACING), ch = chars[k];
-      if (!ch || ch === " " || hidden(gx) || isNaN(ys[gx])) continue;
-      var t2 = smooth(a, b, gx);
-      if (t2 < 0.02) continue;
-      var y1 = ys[Math.min(W, gx + 1)], y0 = ys[Math.max(0, gx - 1)];
-      var ang = isNaN(y1) || isNaN(y0) ? 0 : Math.atan2(y1 - y0, 2);
-      cx.save();
-      cx.translate(gx, ys[gx]);
-      cx.rotate(ang * 0.8);
-      cx.globalAlpha = t2;
-      cx.font = "500 " + (8 + 4.5 * t2).toFixed(1) + "px 'JetBrains Mono', monospace";
-      cx.fillText(ch, 0, 0);
-      cx.restore();
-    }
-    cx.globalAlpha = 1;
-
-    /* ponta da pena: um ponto no traçado que vira cursor de texto na zona de código */
-    if (live && cursor <= W && !isNaN(ys[Math.floor(cursor)])) {
-      var px = Math.floor(cursor), py = ys[px], tc = smooth(a, b, px);
-      cx.fillStyle = ink;
-      cx.globalAlpha = 1 - tc;
-      cx.beginPath(); cx.arc(px, py, 2.6, 0, Math.PI * 2); cx.fill();
-      cx.globalAlpha = tc;
-      cx.fillRect(px + 3, py - 7, 2, 14);
+      cx.fillStyle = col;
+      for (var k = Math.ceil(a / SPACING); k * SPACING <= W; k++) {
+        var gx = Math.round(k * SPACING), chr = chars[c][k];
+        if (!chr || chr === " " || hidden(gx) || isNaN(y[gx])) continue;
+        var t2 = smooth(a, b, gx);
+        if (t2 < 0.02) continue;
+        var y1 = y[Math.min(W, gx + 1)], y0 = y[Math.max(0, gx - 1)];
+        var ang = isNaN(y1) || isNaN(y0) ? 0 : Math.atan2(y1 - y0, 2);
+        cx.save();
+        cx.translate(gx, y[gx]);
+        cx.rotate(ang * 0.8);
+        cx.globalAlpha = t2;
+        cx.font = "500 " + (7 + 4 * t2).toFixed(1) + "px 'JetBrains Mono', monospace";
+        cx.fillText(chr, 0, 0);
+        cx.restore();
+      }
       cx.globalAlpha = 1;
+
+      /* ponta da varredura: ponto na curva que vira cursor de texto na zona de código */
+      var px = Math.floor(cursor);
+      if (live && px <= W && !isNaN(y[px])) {
+        var tc = smooth(a, b, px);
+        cx.globalAlpha = 1 - tc;
+        cx.beginPath(); cx.arc(px, y[px], 2.2, 0, Math.PI * 2); cx.fill();
+        cx.globalAlpha = tc;
+        cx.fillRect(px + 3, y[px] - 6, 2, 12);
+        cx.globalAlpha = 1;
+      }
     }
   }
 
@@ -522,7 +558,7 @@ footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns:
     requestAnimationFrame(frame);
   }
 
-  window.__strip = { colors: colors, redraw: function () { resize(); } };
+  window.__strip = { colors: function () {}, redraw: function () { resize(); } };
   var rt;
   window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(resize, 120); });
   function go() { resize(); if (!still) requestAnimationFrame(frame); }
