@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;600&display=swap">
 <style>
-/* Layout: abertura editorial seguida de uma faixa de monitor multiparamétrico (a tela é escura nos dois temas).
+/* Layout: abertura editorial seguida de um monitor multiparamétrico desenhado direto sobre a página.
    Grade editorial de duas colunas (rótulo | conteúdo), fios finos no lugar de cartões. */
 :root {
   --bg: #fbfbfa;
@@ -28,8 +28,9 @@
   --muted: #5e6870;
   --rule: #e4e2e0;
   --accent: #c63f2f;
-  --screen: #070b0d;          /* tela do monitor, igual nos dois temas */
-  --screen-ink: #c9d4d2;
+  --ch1: #11875a;             /* canais do monitor: ECG, PA invasiva, pletismografia */
+  --ch2: #cf3b3b;
+  --ch3: #1f7fb8;
   --f-display: "Sora", "Segoe UI", Arial, sans-serif;
   --f-body: "Instrument Sans", "Segoe UI", Roboto, sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -38,13 +39,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0b1012; --ink: #e2e8e6; --muted: #8b9795; --rule: #1d282b;
-    --accent: #6fdcaa;
+    --accent: #6fdcaa; --ch1: #5fe0a0; --ch2: #ff6b6b; --ch3: #59cff0;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0b1012; --ink: #e2e8e6; --muted: #8b9795; --rule: #1d282b;
-  --accent: #6fdcaa;
+  --accent: #6fdcaa; --ch1: #5fe0a0; --ch2: #ff6b6b; --ch3: #59cff0;
   color-scheme: dark;
 }
 
@@ -105,8 +106,8 @@ p { margin: 0; }
   .portrait { order: -1; width: 6rem; margin-bottom: 1.25rem; }
 }
 
-/* Monitor multiparamétrico (tela escura nos dois temas) */
-.monitor { background: var(--screen); color: var(--screen-ink); border-block: 1px solid var(--rule); }
+/* Monitor multiparamétrico, sobre o fundo da página */
+.monitor { border-block: 1px solid var(--rule); }
 .monitor .mon-in {
   display: grid; grid-template-columns: minmax(0, 1fr) 15rem; height: clamp(210px, 20vw, 270px);
   padding-right: max(24px, calc((100vw - var(--wrap)) / 2 + 24px));
@@ -117,19 +118,19 @@ p { margin: 0; }
 .waves .ch:nth-of-type(1) { top: 0.6rem; }
 .waves .ch:nth-of-type(2) { top: calc(33.33% + 0.6rem); }
 .waves .ch:nth-of-type(3) { top: calc(66.66% + 0.6rem); }
-.c1 { color: #5fe0a0; } .c2 { color: #ff6b6b; } .c3 { color: #59cff0; }
-.nums { display: grid; grid-template-rows: repeat(3, 1fr); border-left: 1px solid rgba(201, 212, 210, 0.12); }
+.c1 { color: var(--ch1); } .c2 { color: var(--ch2); } .c3 { color: var(--ch3); }
+.nums { display: grid; grid-template-rows: repeat(3, 1fr); border-left: 1px solid var(--rule); }
 .nums .n { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; padding: 0.6rem 0 0.6rem 1.1rem; min-width: 0; }
-.nums .n + .n { border-top: 1px solid rgba(201, 212, 210, 0.08); }
+.nums .n + .n { border-top: 1px solid var(--rule); }
 .nums span { font: 500 0.68rem/1 var(--f-mono); letter-spacing: 0.08em; align-self: flex-start; }
 .nums b { font: 500 clamp(1.5rem, 1rem + 1.6vw, 2.3rem)/1 var(--f-display); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .nums b small { font-size: 0.5em; margin-left: 0.3em; opacity: 0.8; }
 @media (max-width: 760px) {
   .monitor .mon-in { grid-template-columns: 1fr; height: auto; padding-right: 0; }
   .waves { height: 180px; order: 2; }
-  .nums { grid-template-rows: none; grid-template-columns: repeat(3, minmax(0, 1fr)); border-left: 0; border-bottom: 1px solid rgba(201, 212, 210, 0.12); }
+  .nums { grid-template-rows: none; grid-template-columns: repeat(3, minmax(0, 1fr)); border-left: 0; border-bottom: 1px solid var(--rule); }
   .nums .n { flex-direction: column; gap: 0.35rem; padding: 0.7rem 0 0.7rem 24px; }
-  .nums .n + .n { border-left: 1px solid rgba(201, 212, 210, 0.08); border-top: 0; padding-left: 0.9rem; }
+  .nums .n + .n { border-left: 1px solid var(--rule); border-top: 0; padding-left: 0.9rem; }
   .nums b { font-size: 1.35rem; }
 }
 
@@ -402,6 +403,7 @@ footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns:
     var next = cur === "dark" ? "light" : "dark";
     root.setAttribute("data-theme", next);
     store.set("pv-theme", next);
+    if (window.__strip) window.__strip.colors();
   });
 
   /* Cabeçalho */
@@ -416,9 +418,9 @@ footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns:
   var cv = area.querySelector("canvas"), cx = cv.getContext("2d");
   var hrEl = document.getElementById("hr");
   var CH = [
-    { color: "#5fe0a0", wave: ecg,   soft: function (p) { return 0.16 * g(p, 0.31, 0.07) + 0.07 * g(p, 0.58, 0.07); }, base: 0.70, amp: 0.62 },
-    { color: "#ff6b6b", wave: art,   soft: function (p) { return 0.30 + 0.12 * g(p, 0.46, 0.12); },                    base: 0.86, amp: 0.66 },
-    { color: "#59cff0", wave: pleth, soft: function (p) { return 0.25 + 0.12 * g(p, 0.56, 0.12); },                    base: 0.86, amp: 0.62 }
+    { color: "--ch1", wave: ecg,   soft: function (p) { return 0.16 * g(p, 0.31, 0.07) + 0.07 * g(p, 0.58, 0.07); }, base: 0.70, amp: 0.62 },
+    { color: "--ch2", wave: art,   soft: function (p) { return 0.30 + 0.12 * g(p, 0.46, 0.12); },                    base: 0.86, amp: 0.66 },
+    { color: "--ch3", wave: pleth, soft: function (p) { return 0.25 + 0.12 * g(p, 0.56, 0.12); },                    base: 0.86, amp: 0.62 }
   ];
   var CODE = {
     pt: ["if (fc > 100) { alertar(\"taquicardia\"); }   ", "const pam = (pas + 2 * pad) / 3;   ", "spo2.alvo = [92, 96];   "],
@@ -426,7 +428,12 @@ footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns:
   };
   var W, H, RH, dpr, SPEED, SPACING = 7.6, GAP = 22;
   var ys, chars, cursor = 0, phase = 0.05, rr = 830, beatAmp = 1, textIdx = [0, 0, 0], hrShown = 72;
-  var running = true, last = 0;
+  var running = true, last = 0, colorsNow = ["#11875a", "#cf3b3b", "#1f7fb8"];
+  function colors() {
+    var cs = getComputedStyle(root);
+    colorsNow = CH.map(function (c, i) { return cs.getPropertyValue(c.color).trim() || colorsNow[i]; });
+    draw();
+  }
 
   function g(x, mu, s) { return Math.exp(-((x - mu) * (x - mu)) / (2 * s * s)); }
   function ecg(p) {
@@ -494,7 +501,7 @@ footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns:
     chars = [{}, {}, {}]; textIdx = [0, 0, 0];
     /* a tela abre já preenchida por uma varredura anterior; a nova começa da esquerda */
     cursor = 0; pen(W + 1); cursor = 0;
-    draw();
+    colors();
   }
 
   function draw() {
@@ -505,7 +512,7 @@ footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns:
     cx.lineWidth = 1.6; cx.lineJoin = "round"; cx.lineCap = "round";
     cx.textAlign = "center"; cx.textBaseline = "middle";
     for (var c = 0; c < 3; c++) {
-      var col = CH[c].color, y = ys[c];
+      var col = colorsNow[c], y = ys[c];
       var grad = cx.createLinearGradient(a, 0, b, 0);
       for (var i = 0; i <= 8; i++) { var t = i / 8; grad.addColorStop(t, hexA(col, (1 - t * t * (3 - 2 * t)).toFixed(3))); }
       cx.strokeStyle = grad;
@@ -558,7 +565,8 @@ footer .wrap { padding-block: 2rem 2.5rem; display: grid; grid-template-columns:
     requestAnimationFrame(frame);
   }
 
-  window.__strip = { colors: function () {}, redraw: function () { resize(); } };
+  window.__strip = { colors: colors, redraw: function () { resize(); } };
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", colors);
   var rt;
   window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(resize, 120); });
   function go() { resize(); if (!still) requestAnimationFrame(frame); }
